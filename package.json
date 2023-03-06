@@ -1,0 +1,14 @@
+{
+  "name": "ds_sequences",
+  "version": "1.0.0",
+  "description": "Masters Project",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "author": "Christoffer Olsen, Emil Holmgren, Frederik Baggesen",
+  "license": "ISC",
+  "dependencies": {
+    "highs": "^0.7.3"
+  }
+}
