@@ -19,7 +19,7 @@ function gatherData(n, s) {
     util.logPositive("Found " + prunedDSSequences.length + " structurally different sequences")
 }
 
-function gatherDataToFile(n, s) {
+async function gatherDataToFile(n, s) {
     
     var startTime = Date.now()
     var DSData = ds.genDSseqPruned(n, s, verbose = true) 
@@ -35,9 +35,9 @@ function gatherDataToFile(n, s) {
     fileText = fileText + "Where " + maxLengthSequences.length + " had the maximum length of " + maxLength + "\n"
     fileText = fileText + "Example of a max-sequence: " + DSSequences[DSSequences.length - 1] + "\n"
     fileText = fileText + "Found " + prunedDSSequences.length + " structurally different sequences"
-
+    console.log(fileText)
     var fileName = "data(" + n + "," + s + ").txt"
-    fs.writeFile(fileName, fileText, (err) => {
+    await fs.writeFile(fileName, fileText, (err) => {
         if (err) throw err;
     })
 }
@@ -109,12 +109,12 @@ function msToTime(duration) {
     return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
 }
 
-function awsGatherData() {
-    var nList = [4, 5, 6, 7, 5, 6, 7, 6, 7]
-    var sList = [3, 3, 3, 3, 5, 4, 4, 5, 5]
+async function awsGatherData() {
+    var nList = [5, 6] //7, 5, 6, 7, 6, 7
+    var sList = [3, 3] //3, 5, 4, 4, 5, 5
 
     for (var i = 0; i < nList.length; i++) {
-        gatherDataToFile(nList[i], sList[i])
+        await gatherDataToFile(nList[i], sList[i])
     }
 }
 
@@ -123,3 +123,4 @@ function awsGatherData() {
 //lp_solver.solveLP(ds3lp.toLineSegmentLP("ABCAB"), log = true)
 
 awsGatherData()
+//lp_solver.solveLP(ds3lp.toLineSegmentLP("ABCBCA"), log = true)
