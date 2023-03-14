@@ -88,7 +88,7 @@ function genDSseqPruned(n, s, verbose = false) {
     }
 }
 
-function isDSseqFast(sequence, n, s, log = false) {
+function isDSseqFast(sequence, n, s) {
     const lastSymbol = sequence.slice(-1)
     const subSymbols = symbols.slice(0, n)
     for(var i = 0; i < subSymbols.length; i++) {
@@ -98,12 +98,10 @@ function isDSseqFast(sequence, n, s, log = false) {
         var forbiddenPattern1 = util.alternatingString(symbol, lastSymbol, s + 2)
         var forbiddenPattern2 = util.alternatingString(lastSymbol, symbol, s + 2)
         if(seq.includes(forbiddenPattern1) || seq.includes(forbiddenPattern2)) {
-            if(log) {util.logError("Sequence contains forbidden pattern")}
             return false
         }
     }
     
-    if(log) {util.logPositive("" + sequence + " is a DS(" + n + ", " + s + ")-sequence")}
     return true
 }
 
@@ -127,7 +125,41 @@ function isDSseq(sequence, n, s, log = false) {
     }
 
     //Verify s
-    return isDSseqFast(sequence, n, s, log)
+    for(var i = 0; i < subSymbols.length - 1; i++) {
+        for(var j = i + 1; j < subSymbols.length; j++) {
+            const symbol1 = subSymbols[i]
+            const symbol2 = subSymbols[j]
+            var seq = util.keepCharacters(sequence, [symbol1, symbol2], makeDS = true)
+            var forbiddenPattern1 = util.alternatingString(symbol1, symbol2, s + 2)
+            var forbiddenPattern2 = util.alternatingString(symbol1, symbol2, s + 2)
+            if(seq.includes(forbiddenPattern1) || seq.includes(forbiddenPattern2)) {
+                if(log) {util.logError("Sequence contains forbidden pattern")}
+                return false
+            }
+        }
+    }
+
+    if(log) {util.logPositive("" + sequence + " is a DS(" + n + ", " + s + ")-sequence")}
+
+    return true
+}
+
+function prunelowerOrderSequences(seqList, n, s) {
+    return seqList.filter(seq => !isDSseq(seq, n, s - 1))
+}
+
+function pruneReverse(seqList) {
+    return seqList.filter( s => {
+        if(s == util.toCanonical(util.reverseString(s))) {
+            return true
+        } else {
+            return s < util.toCanonical(util.reverseString(s))
+        }
+    })
+}
+
+function pruneForCubic(seqList, n) {
+   return pruneReverse(prunelowerOrderSequences(seqList, n, 3))
 }
 
 function pruneRedundantSequences(seqList) {
@@ -153,4 +185,5 @@ function pruneRedundantSequences(seqList) {
     return results
 }
 
-module.exports = {symbols, genDSseq, isDSseq, pruneRedundantSequences, genDSseqPruned}
+module.exports = {symbols, genDSseq, isDSseq, pruneRedundantSequences, genDSseqPruned,
+                  prunelowerOrderSequences, pruneReverse, pruneForCubic}

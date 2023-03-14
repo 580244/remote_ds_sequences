@@ -150,7 +150,57 @@ function getAllPairs(symbols) {
     return pairs
 }
 
+function getIntersectionIntervals(sequence, pairs) {
+    var intersectionIntervals = new Map()
+    for(var i = 0; i < pairs.length; i++) {
+        const symbol1 = pairs[i][0]
+        const symbol2 = pairs[i][1]
+        var intervals = []
+        var currSymbol = symbol1
+        var index = sequence.indexOf(currSymbol) + 1
+        while(true) {
+            const subSequence = sequence.substring(index)
+            const next1 = subSequence.indexOf(symbol1)
+            const next2 = subSequence.indexOf(symbol2)
+            if(next1 == -1 && next2 == -1) { break }
+            var closestSymbol
+            if(next1 == -1 || next2 == -1) {
+                closestSymbol = next1 == -1 ? symbol2 : symbol1
+            } else {
+                closestSymbol = next1 < next2 ? symbol1 : symbol2  
+            }
+            const nextIndex = subSequence.indexOf(closestSymbol) 
+            if(closestSymbol != currSymbol) {
+                intervals.push({left: index, right: index + nextIndex})
+                index += nextIndex + 1
+                currSymbol = closestSymbol
+            } else {
+                index += nextIndex + 1
+            }
+        }
+        intersectionIntervals.set(pairs[i], intervals)
+    }
+    return intersectionIntervals
+}
+
+function getVariables(solution) {
+    var variables = []
+    for (var x in solution.Columns) {
+        variables.push({symbol: x, value: solution.Columns[x].Primal})
+    }
+    variables.sort((a, b) => {
+        if(a.symbol < b.symbol) {
+            return -1
+        } else if(a.symbol > b.symbol) {
+            return 1
+        } else {
+            return 0
+        }
+    })
+    return variables
+}
+
 module.exports = {logError, logPositive, keepCharacters, alternatingString,
                   badPattern, isEquivalent, reverseString, padToLength, getUniqueSymbols,
                   getOccurenceMap, sortString, getAllPairs, toCanonical, binarySearch,
-                  cubicEvalString}
+                  cubicEvalString, getIntersectionIntervals, getVariables, symbols}
