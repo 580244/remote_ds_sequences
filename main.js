@@ -195,7 +195,7 @@ function msToTime(duration) {
 }
 
 async function awsGatherData() {
-    var nList = [5] //7, 5, 6, 7, 6, 7
+    var nList = [6] //7, 5, 6, 7, 6, 7
     var sList = [3] //3, 5, 4, 4, 5, 5
 
     for (var i = 0; i < nList.length; i++) {
@@ -203,7 +203,7 @@ async function awsGatherData() {
     }
 }
 
-realizeSeqAsLineSegmentsToFile()
+awsGatherData()
 
 //test()
 
