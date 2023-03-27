@@ -52,6 +52,9 @@ function genDSseqPruned(n, s, verbose = false) {
         }
         if(isLeaf) {
             results.push(element.seq)
+            if (results.length % 50000) {
+                console.log("results length (not allResults)" + results.length)
+            }
         }
     }
 
